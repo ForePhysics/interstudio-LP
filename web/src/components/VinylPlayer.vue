@@ -9,7 +9,7 @@
       >
         <!-- 黑胶唱片图片 -->
         <img 
-          src="@/assets/LP.png" 
+          src="@/assets/LP.webp" 
           alt="黑胶唱片" 
           class="vinyl-image"
         />

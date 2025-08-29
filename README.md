@@ -24,7 +24,7 @@ soundwave/
 │   │   │   ├── AudioPlayer.vue     # 音频播放引擎
 │   │   │   └── Main.vue           # 入口组件
 │   │   ├── assets/
-│   │   │   ├── LP.png             # 黑胶唱片图片
+│   │   │   ├── LP.webp             # 黑胶唱片图片
 │   │   │   └── stickers/          # 贴纸资源
 │   │   ├── App.vue
 │   │   └── main.js

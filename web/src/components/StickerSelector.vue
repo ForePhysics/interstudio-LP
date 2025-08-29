@@ -43,32 +43,32 @@ export default {
       matchedFile: null,
       stickers: [
         // Logo 系列
-        { id: 'logo1', name: 'Logo 1', image: require('@/assets/sticker/logo1.png') },
-        { id: 'logo2', name: 'Logo 2', image: require('@/assets/sticker/logo2.png') },
-        { id: 'logo3', name: 'Logo 3', image: require('@/assets/sticker/logo3.png') },
-        { id: 'logo4', name: 'Logo 4', image: require('@/assets/sticker/logo4.png') },
-        { id: 'logo5', name: 'Logo 5', image: require('@/assets/sticker/logo5.png') },
-        { id: 'logo6', name: 'Logo 6', image: require('@/assets/sticker/logo6.png') },
+        { id: 'logo1', name: 'Logo 1', image: require('@/assets/sticker/logo1.webp') },
+        { id: 'logo2', name: 'Logo 2', image: require('@/assets/sticker/logo2.webp') },
+        { id: 'logo3', name: 'Logo 3', image: require('@/assets/sticker/logo3.webp') },
+        { id: 'logo4', name: 'Logo 4', image: require('@/assets/sticker/logo4.webp') },
+        { id: 'logo5', name: 'Logo 5', image: require('@/assets/sticker/logo5.webp') },
+        { id: 'logo6', name: 'Logo 6', image: require('@/assets/sticker/logo6.webp') },
 
         // KB 系列
-        { id: 'kb1', name: 'KB 1', image: require('@/assets/sticker/kb1.png') },
-        { id: 'kb2', name: 'KB 2', image: require('@/assets/sticker/kb2.png') },
-        { id: 'kb3', name: 'KB 3', image: require('@/assets/sticker/kb3.png') },
-        { id: 'kb4', name: 'KB 4', image: require('@/assets/sticker/kb4.png') },
+        { id: 'kb1', name: 'KB 1', image: require('@/assets/sticker/kb1.webp') },
+        { id: 'kb2', name: 'KB 2', image: require('@/assets/sticker/kb2.webp') },
+        { id: 'kb3', name: 'KB 3', image: require('@/assets/sticker/kb3.webp') },
+        { id: 'kb4', name: 'KB 4', image: require('@/assets/sticker/kb4.webp') },
 
         // KBR 系列
-        { id: 'kbr1', name: 'KBR 1', image: require('@/assets/sticker/kbr1.png') },
-        { id: 'kbr2', name: 'KBR 2', image: require('@/assets/sticker/kbr2.png') },
-        { id: 'kbr3', name: 'KBR 3', image: require('@/assets/sticker/kbr3.png') },
-        { id: 'kbr4', name: 'KBR 4', image: require('@/assets/sticker/kbr4.png') },
+        { id: 'kbr1', name: 'KBR 1', image: require('@/assets/sticker/kbr1.webp') },
+        { id: 'kbr2', name: 'KBR 2', image: require('@/assets/sticker/kbr2.webp') },
+        { id: 'kbr3', name: 'KBR 3', image: require('@/assets/sticker/kbr3.webp') },
+        { id: 'kbr4', name: 'KBR 4', image: require('@/assets/sticker/kbr4.webp') },
 
         // B 系列
-        { id: 'b1', name: 'B 1', image: require('@/assets/sticker/b1.png') },
-        { id: 'b2', name: 'B 2', image: require('@/assets/sticker/b2.png') },
-        { id: 'b3', name: 'B 3', image: require('@/assets/sticker/b3.png') },
-        { id: 'b4', name: 'B 4', image: require('@/assets/sticker/b4.png') },
-        { id: 'b5', name: 'B 5', image: require('@/assets/sticker/b5.png') },
-        { id: 'b6', name: 'B 6', image: require('@/assets/sticker/b6.png') }
+        { id: 'b1', name: 'B 1', image: require('@/assets/sticker/b1.webp') },
+        { id: 'b2', name: 'B 2', image: require('@/assets/sticker/b2.webp') },
+        { id: 'b3', name: 'B 3', image: require('@/assets/sticker/b3.webp') },
+        { id: 'b4', name: 'B 4', image: require('@/assets/sticker/b4.webp') },
+        { id: 'b5', name: 'B 5', image: require('@/assets/sticker/b5.webp') },
+        { id: 'b6', name: 'B 6', image: require('@/assets/sticker/b6.webp') }
       ]
     }
   },
