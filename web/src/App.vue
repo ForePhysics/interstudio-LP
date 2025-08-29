@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <div class="mobile-header">
-      <h1>🎵 InterStudio</h1>
-      <p class="subtitle">黑胶唱片 Test</p>
+      <h1>🎵 InterStudio 黑胶唱片</h1>
     </div>
     <MidiPlayer />
   </div>
