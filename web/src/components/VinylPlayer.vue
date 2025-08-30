@@ -224,8 +224,8 @@ export default {
 /* 黑胶唱片容器 */
 .vinyl-container {
   position: relative;
-  width: 350px;
-  height: 350px;
+  width: 70%;
+  aspect-ratio: 1;
   z-index: 10;
 }
 
@@ -417,8 +417,7 @@ export default {
   }
   
   .vinyl-container {
-    width: 240px;
-    height: 240px;
+    width: 70%;
   }
   
   .tonearm {
