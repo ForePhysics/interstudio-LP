@@ -270,6 +270,9 @@ export default {
 @media (max-width: 768px) {
   .mp3-player {
     padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
   .vinyl-main {
@@ -278,6 +281,11 @@ export default {
     margin: 10px auto;
     aspect-ratio: 1;
     height: auto;
+    flex-shrink: 0;
+  }
+  
+  .view-switcher {
+    flex-shrink: 0;
   }
   
   .view-panel {
@@ -287,8 +295,8 @@ export default {
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 10px;
-    height: calc(100vh - var(--header-height, 28px) - 90vw - 30px);
-    overflow: hidden;
+    flex: 1;
+    min-height: 0;
   }
   
   .switch-buttons {

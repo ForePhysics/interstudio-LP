@@ -3,7 +3,9 @@
     <div class="mobile-header">
       <h1>🎵 科道书院迎新唱片</h1>
     </div>
-    <Mp3Player />
+    <div class="main-content">
+      <Mp3Player />
+    </div>
   </div>
 </template>
 
@@ -62,14 +64,23 @@ export default {
   font-weight: 300;
 }
 
+.main-content {
+  flex: 1;
+  overflow: hidden;
+}
+
 /* 移动端适配 */
 @media (max-width: 768px) {
   #app {
     --header-height: 28px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
   
   .mobile-header {
     padding: 5px 8px;
+    flex-shrink: 0;
   }
   
   .mobile-header h1 {
