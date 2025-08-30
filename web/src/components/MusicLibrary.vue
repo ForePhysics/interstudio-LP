@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <!-- MIDI 文件列表 -->
+    <!-- MP3 文件列表 -->
     <div class="file-list-section">
       <div v-if="fileList.length === 0 && !loadingList" class="empty-state">
         <div class="empty-icon">🎵</div>
@@ -43,7 +43,7 @@
           </div>
 
           <div class="file-info">
-            <div class="file-name">{{ file.name.replace(/\.(mid|midi)$/, '') }}</div>
+            <div class="file-name">{{ file.name.replace(/\.mp3$/, '') }}</div>
             <div class="file-details">
               <span class="file-size">{{ formatFileSize(file.size) }}</span>
               <span class="file-index">#{{ String(index + 1).padStart(2, '0') }}</span>
@@ -98,12 +98,12 @@ export default {
     async loadFileList() {
       this.loadingList = true
       try {
-        const response = await axios.get('/api/midi-files')
+        const response = await axios.get('/api/mp3-files')
         this.fileList = response.data
         if (this.fileList.length === 0) {
-          this.$message.info('后端暂无 MIDI 文件')
+          this.$message.info('后端暂无 MP3 文件')
         } else {
-          this.$message.success(`找到 ${this.fileList.length} 个 MIDI 文件`)
+          this.$message.success(`找到 ${this.fileList.length} 个 MP3 文件`)
         }
       } catch (error) {
         this.$message.error('获取文件列表失败：' + error.message)
@@ -142,185 +142,31 @@ export default {
         }
         
         this.selectedFile = file.url
-        await this.loadMidiFile(file)
+        await this.loadMp3File(file)
       }
     },
 
-    async loadMidiFile(file) {
+    async loadMp3File(file) {
       try {
-        const response = await axios.get(file.url, {
-          responseType: 'arraybuffer'
-        })
+        // 对于MP3文件，我们不需要解析内容，只需要传递URL
+        const mp3Data = {
+          url: file.url,
+          type: 'mp3'
+        }
         
-        const arrayBuffer = response.data
-        const midiData = this.parseMidi(arrayBuffer)
-        
-        this.$emit('load-midi', {
-          midiData,
+        this.$emit('load-mp3', {
+          mp3Data,
           fileName: file.name
         })
         
-        this.$message.success('MIDI 文件加载成功')
+        this.$message.success('MP3 文件加载成功')
       } catch (error) {
-        this.$message.error('加载 MIDI 文件失败：' + error.message)
+        this.$message.error('加载 MP3 文件失败：' + error.message)
       }
     },
 
     pause() {
       this.$emit('pause')
-    },
-
-    // 解析 MIDI 文件并提取音符信息
-    parseMidi(arrayBuffer) {
-      const view = new DataView(arrayBuffer)
-      
-      // 检查 MIDI 文件头
-      const header = String.fromCharCode(
-        view.getUint8(0), view.getUint8(1), view.getUint8(2), view.getUint8(3)
-      )
-      
-      if (header !== 'MThd') {
-        throw new Error('不是有效的 MIDI 文件')
-      }
-
-      // 解析 MIDI 头部信息
-      const format = view.getUint16(8)
-      const tracks = view.getUint16(10)
-      const division = view.getUint16(12)
-
-      const notes = []
-      let offset = 14
-
-      // 解析轨道
-      for (let track = 0; track < tracks; track++) {
-        if (offset >= arrayBuffer.byteLength - 8) break
-
-        const trackHeader = String.fromCharCode(
-          view.getUint8(offset), view.getUint8(offset + 1),
-          view.getUint8(offset + 2), view.getUint8(offset + 3)
-        )
-
-        if (trackHeader === 'MTrk') {
-          const trackLength = view.getUint32(offset + 4)
-          offset += 8
-
-          const trackNotes = this.parseTrackEvents(view, offset, trackLength, division)
-          notes.push(...trackNotes)
-          offset += trackLength
-        } else {
-          offset += 8
-        }
-      }
-
-      return {
-        format,
-        tracks,
-        division,
-        notes: notes.sort((a, b) => a.time - b.time)
-      }
-    },
-
-    parseTrackEvents(view, startOffset, trackLength, division) {
-      const notes = []
-      let offset = startOffset
-      let deltaTime = 0
-      let runningStatus = 0
-
-      while (offset < startOffset + trackLength) {
-        // 读取增量时间
-        const deltaTimeResult = this.readVariableLength(view, offset)
-        deltaTime += deltaTimeResult.value
-        offset = deltaTimeResult.offset
-
-        if (offset >= startOffset + trackLength) break
-
-        // 读取事件
-        let eventByte = view.getUint8(offset++)
-
-        // 处理运行状态
-        if (eventByte < 0x80) {
-          // 这是一个数据字节，使用运行状态
-          if (runningStatus === 0) {
-            throw new Error('没有运行状态的MIDI事件')
-          }
-          offset-- // 回退一个字节
-          eventByte = runningStatus
-        } else {
-          runningStatus = eventByte
-        }
-
-        const eventType = eventByte & 0xF0
-
-        if (eventType === 0x90 || eventType === 0x80) { // Note On/Off
-          if (offset + 1 >= startOffset + trackLength) break
-          
-          const note = view.getUint8(offset++)
-          const velocity = view.getUint8(offset++)
-          
-          const timeInSeconds = (deltaTime / division) * 0.5 // 假设120 BPM
-
-          // Note On 且 velocity > 0，或者 Note Off
-          if ((eventType === 0x90 && velocity > 0) || eventType === 0x80) {
-            notes.push({
-              time: timeInSeconds,
-              note: note,
-              velocity: velocity,
-              type: (eventType === 0x90 && velocity > 0) ? 'noteOn' : 'noteOff'
-            })
-          }
-        } else {
-          // 跳过其他事件
-          const paramCount = this.getMidiEventParamCount(eventType)
-          offset += paramCount
-          
-          if (offset >= startOffset + trackLength) break
-          
-          // 处理系统独占事件和元事件
-          if (eventByte === 0xFF) {
-            if (offset >= startOffset + trackLength) break
-            // const metaType = view.getUint8(offset++) // 暂时不处理元类型
-            offset++ // 跳过元类型字节
-            const length = this.readVariableLength(view, offset)
-            offset = length.offset + length.value
-          }
-        }
-      }
-
-      return notes
-    },
-
-    readVariableLength(view, offset) {
-      let value = 0
-      let bytesRead = 0
-
-      while (bytesRead < 4) {
-        if (offset + bytesRead >= view.byteLength) break
-        
-        const byte = view.getUint8(offset + bytesRead)
-        value = (value << 7) | (byte & 0x7F)
-        bytesRead++
-        
-        if ((byte & 0x80) === 0) break
-      }
-
-      return { value, offset: offset + bytesRead }
-    },
-
-    // 获取 MIDI 事件参数数量
-    getMidiEventParamCount(eventType) {
-      switch (eventType) {
-        case 0x80: // Note Off
-        case 0x90: // Note On
-        case 0xA0: // Polyphonic Key Pressure
-        case 0xB0: // Control Change
-        case 0xE0: // Pitch Bend
-          return 2
-        case 0xC0: // Program Change
-        case 0xD0: // Channel Pressure
-          return 1
-        default:
-          return 0
-      }
     },
 
     // 启用音频（用于 iOS Safari）

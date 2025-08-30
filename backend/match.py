@@ -99,11 +99,11 @@ def build_input_tags(selected_logos):
 
 def find_best_match(input_tags, folder_path):
   """
-  Find the best matching MIDI file based on tag matching scores.
+  Find the best matching MP3 file based on tag matching scores.
   
   Args:
     input_tags: List of 5 tags [weather, season, scene, color, animal]
-    folder_path: Path to folder containing MIDI files
+    folder_path: Path to folder containing MP3 files
   
   Returns:
     Best matching filename
@@ -114,11 +114,11 @@ def find_best_match(input_tags, folder_path):
   best_score = -1
   best_matches = []
   
-  # Get all .mid files in folder
-  midi_files = [f for f in os.listdir(folder_path) if f.endswith('.mid')]
+  # Get all .mp3 files in folder
+  mp3_files = [f for f in os.listdir(folder_path) if f.endswith('.mp3')]
   
-  for filename in midi_files:
-    # Extract tags from filename (remove .mid extension)
+  for filename in mp3_files:
+    # Extract tags from filename (remove .mp3 extension)
     file_tags = filename[:-4].split(',')
     
     if len(file_tags) != 5:
@@ -150,8 +150,8 @@ def find_best_match(input_tags, folder_path):
   # If still tied, choose lexicographically smallest
   return min(top_matches)
 
-def play_midi(filename, folder_path):
-  """Play MIDI file using pygame"""
+def play_mp3(filename, folder_path):
+  """Play MP3 file using pygame"""
   try:
     # pygame.mixer.init()
     # filepath = os.path.join(folder_path, filename)
@@ -170,8 +170,8 @@ def main():
   import sys
   
   if len(sys.argv) < 3:
-    print("Usage: python match.py <selected_stickers> <midi_folder>")
-    print("Example: python match.py logo1,kb2,b6 /path/to/midi/files")
+    print("Usage: python match.py <selected_stickers> <mp3_folder>")
+    print("Example: python match.py logo1,kb2,b6 /path/to/mp3/files")
     return
   
   # 解析命令行参数

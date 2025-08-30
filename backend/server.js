@@ -25,44 +25,44 @@ app.use(compression({
 app.use(cors());
 app.use(express.json());
 
-// 创建 MIDI 文件存储目录
-const midiDir = path.join(__dirname, 'midi-files');
-if (!fs.existsSync(midiDir)) {
-  fs.mkdirSync(midiDir);
+// 创建 MP3 文件存储目录
+const mp3Dir = path.join(__dirname, 'mp3-files');
+if (!fs.existsSync(mp3Dir)) {
+  fs.mkdirSync(mp3Dir);
 }
 
-// 静态文件服务 - 提供 MIDI 文件，带缓存优化
-app.use('/midi', (req, res, next) => {
+// 静态文件服务 - 提供 MP3 文件，带缓存优化
+app.use('/mp3', (req, res, next) => {
   // 设置缓存头
   res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1年缓存
   res.setHeader('ETag', req.url); // 使用URL作为ETag
   next();
-}, express.static(midiDir, {
+}, express.static(mp3Dir, {
   maxAge: '1y', // 1年缓存
   etag: true,
   lastModified: true
 }));
 
 // API 路由
-app.get('/api/midi-files', (req, res) => {
+app.get('/api/mp3-files', (req, res) => {
   try {
-    const files = fs.readdirSync(midiDir)
-      .filter(file => file.endsWith('.mid') || file.endsWith('.midi'))
+    const files = fs.readdirSync(mp3Dir)
+      .filter(file => file.endsWith('.mp3'))
       .map(file => ({
         name: file,
-        url: `/midi/${file}`,
-        size: fs.statSync(path.join(midiDir, file)).size
+        url: `/mp3/${file}`,
+        size: fs.statSync(path.join(mp3Dir, file)).size
       }));
     
     res.json(files);
   } catch (error) {
-    res.status(500).json({ error: '读取 MIDI 文件失败' });
+    res.status(500).json({ error: '读取 MP3 文件失败' });
   }
 });
 
 // 健康检查
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'MIDI 服务器运行正常' });
+  res.json({ status: 'ok', message: 'MP3 服务器运行正常' });
 });
 
 // 贴纸匹配API
@@ -76,12 +76,12 @@ app.post('/api/match-stickers', (req, res) => {
     
     // 调用 Python 脚本进行匹配
     const pythonScript = path.join(__dirname, 'match.py');
-    const midiFolder = path.join(__dirname, 'midi-files');
+    const mp3Folder = path.join(__dirname, 'mp3-files');
     
     // 构造 Python 命令参数
     const stickerArgs = selectedStickers.join(',');
     
-    const pythonProcess = spawn('python3', [pythonScript, stickerArgs, midiFolder]);
+    const pythonProcess = spawn('python3', [pythonScript, stickerArgs, mp3Folder]);
     
     let output = '';
     let errorOutput = '';
@@ -154,12 +154,12 @@ app.post('/api/match-stickers', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`MIDI 服务器运行在 http://localhost:${port}`);
-  console.log(`MIDI 文件目录: ${midiDir}`);
+  console.log(`MP3 服务器运行在 http://localhost:${port}`);
+  console.log(`MP3 文件目录: ${mp3Dir}`);
   console.log(`API 端点:`);
-  console.log(`  GET  /api/midi-files     - 获取所有 MIDI 文件列表`);
+  console.log(`  GET  /api/mp3-files      - 获取所有 MP3 文件列表`);
   console.log(`  POST /api/match-stickers - 根据贴纸匹配音乐文件`);
-  console.log(`  GET  /midi/<filename>    - 下载 MIDI 文件`);
+  console.log(`  GET  /mp3/<filename>     - 下载 MP3 文件`);
   console.log(`  GET  /api/health         - 健康检查`);
 });
 

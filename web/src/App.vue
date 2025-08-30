@@ -3,17 +3,17 @@
     <div class="mobile-header">
       <h1>🎵 InterStudio 黑胶唱片</h1>
     </div>
-    <MidiPlayer />
+    <Mp3Player />
   </div>
 </template>
 
 <script>
-import MidiPlayer from './components/MidiPlayer.vue'
+import Mp3Player from './components/Mp3Player.vue'
 
 export default {
   name: 'App',
   components: {
-    MidiPlayer
+    Mp3Player
   }
 }
 </script>
