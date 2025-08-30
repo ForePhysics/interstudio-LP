@@ -47,38 +47,20 @@ export default {
     return {
       fileList: [],
       selectedFile: '',
-      loadingList: false,
-      audioEnabled: false,
-      needsAudioEnable: false,
-      audioContext: null
+      loadingList: false
     }
   },
   async mounted() {
-    await this.checkAudioContext()
     await this.loadFileList()
   },
   methods: {
-    async checkAudioContext() {
-      try {
-        this.audioContext = new (window.AudioContext || window.webkitAudioContext)()
-        if (this.audioContext.state === 'suspended') {
-          this.needsAudioEnable = true
-          this.audioEnabled = false
-        } else {
-          this.audioEnabled = true
-        }
-      } catch (error) {
-        console.error('音频上下文检查失败:', error)
-      }
-    },
-
     async loadFileList() {
       this.loadingList = true
       try {
         const response = await axios.get('/api/mp3-files')
         this.fileList = response.data
         if (this.fileList.length === 0) {
-          this.$message.info('后端暂无 MP3 文件')
+          this.$message.error('暂无可用的 MP3 文件')
         }
       } catch (error) {
         this.$message.error('获取文件列表失败：' + error.message)
@@ -95,25 +77,6 @@ export default {
         // 先停止当前播放的音乐
         if (this.isPlaying) {
           this.$emit('stop')
-        }
-
-        // 确保音频上下文已初始化
-        if (!this.audioContext) {
-          await this.checkAudioContext()
-        }
-
-        // iOS Safari 需要在用户交互中启动音频上下文
-        if (this.audioContext.state === 'suspended') {
-          try {
-            await this.audioContext.resume()
-            this.audioEnabled = true
-            this.needsAudioEnable = false
-            console.log('音频上下文已启动')
-          } catch (error) {
-            console.error('启动音频上下文失败:', error)
-            this.$message.warning('请先点击"启用音频"按钮')
-            return
-          }
         }
 
         this.selectedFile = file.url
@@ -144,58 +107,6 @@ export default {
       this.$emit('pause')
     },
 
-    // 启用音频（用于 iOS Safari）
-    async enableAudio() {
-      if (!this.audioContext) {
-        await this.checkAudioContext()
-      }
-
-      if (this.audioContext.state === 'suspended') {
-        try {
-          await this.audioContext.resume()
-          this.audioEnabled = true
-          this.needsAudioEnable = false
-          console.log('音频已启用')
-
-          // 播放测试音符
-          this.playTestNote()
-
-          this.$message.success('音频已启用，现在可以播放音乐了！')
-        } catch (error) {
-          console.error('启用音频失败:', error)
-          this.$message.error('启用音频失败')
-        }
-      } else {
-        this.audioEnabled = true
-        this.playTestNote()
-      }
-    },
-
-    // 播放测试音符
-    playTestNote() {
-      if (!this.audioContext || this.audioContext.state !== 'running') {
-        console.log('音频上下文未运行')
-        return
-      }
-
-      console.log('播放测试音符...')
-      const oscillator = this.audioContext.createOscillator()
-      const gain = this.audioContext.createGain()
-
-      oscillator.connect(gain)
-      gain.connect(this.audioContext.destination)
-
-      oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime) // A4
-      oscillator.type = 'sine'
-
-      gain.gain.setValueAtTime(0, this.audioContext.currentTime)
-      gain.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.01)
-      gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5)
-
-      oscillator.start(this.audioContext.currentTime)
-      oscillator.stop(this.audioContext.currentTime + 0.5)
-    },
-
     formatFileSize(bytes) {
       if (bytes === 0) return '0 B'
       const k = 1024
@@ -213,7 +124,7 @@ export default {
           // 找到文件，直接播放
           await this.selectAndPlay(matchedFile)
           // this.$message.success(`🎵 正在播放匹配的音乐: ${filename}`)
-          this.$message.success(`🎵 正在播放匹配的音乐`)
+          this.$message.success(`🎵 正在播放音乐`)
         } else {
           // 如果在当前列表中没找到，重新加载文件列表再试
           await this.loadFileList()
@@ -222,9 +133,9 @@ export default {
           if (refreshedFile) {
             await this.selectAndPlay(refreshedFile)
             // this.$message.success(`🎵 正在播放匹配的音乐: ${filename}`)
-            this.$message.success(`🎵 正在播放匹配的音乐`)
+            this.$message.success(`🎵 正在播放音乐`)
           } else {
-            this.$message.error(`未找到匹配的音乐文件: ${filename}`)
+            this.$message.error(`未找到音乐文件: ${filename}`)
             // 通知父组件出错，清除忙碌状态
             this.$emit('music-match-error', filename)
           }

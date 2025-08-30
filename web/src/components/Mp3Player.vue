@@ -108,7 +108,7 @@ export default {
       if (this.mp3Data) {
         this.$refs.audioPlayer.play()
       } else {
-        this.$message.info('请先选择一首音乐')
+        this.$message.info('请先选择贴纸生成音乐')
         this.currentView = 'stickers'
       }
     },
