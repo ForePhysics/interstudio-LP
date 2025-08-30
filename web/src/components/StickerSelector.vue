@@ -1,7 +1,7 @@
 <template>
   <div class="sticker-selector">
     <div class="sticker-header">
-      <h3>选择贴纸来发现音乐</h3>
+      <h3>选择贴纸 发现音乐</h3>
       <div class="selected-count">
         已选择 {{ selectedStickers.length }} / 6 个贴纸
         <span v-if="selectedStickers.length < 1" class="hint">(至少选择1个)</span>
@@ -29,7 +29,7 @@
         :loading="loading"
       >
         <i class="el-icon-search"></i>
-        找到匹配的音乐
+        生成音乐
       </el-button>
     </div>
   </div>
