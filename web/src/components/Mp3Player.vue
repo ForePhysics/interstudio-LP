@@ -4,6 +4,7 @@
     <div class="vinyl-main">
       <VinylPlayer 
         :is-playing="isPlaying"
+        :selected-stickers="selectedStickers"
         @play="handleVinylPlay"
         @pause="handleVinylPause"
       />
@@ -31,13 +32,26 @@
 
     <!-- 贴纸选择器视图 -->
     <div v-if="currentView === 'stickers'" class="view-panel">
-      <StickerSelector @music-matched="onMusicMatched" />
+      <StickerSelector 
+        @music-matched="onMusicMatched"
+        @stickers-changed="handleStickersChanged"
+      />
     </div>
     
     <!-- 音乐库视图 -->
-    <div v-if="currentView === 'library'" class="view-panel">
+    <div v-show="currentView === 'library'" class="view-panel">
       <MusicLibrary 
         ref="musicLibrary"
+        :is-playing="isPlaying"
+        @load-mp3="handleLoadMp3"
+        @pause="handlePause"
+      />
+    </div>
+    
+    <!-- 隐藏的音乐库组件 - 始终渲染以支持音频播放 -->
+    <div v-if="currentView !== 'library'" style="display: none;">
+      <MusicLibrary 
+        ref="hiddenMusicLibrary"
         :is-playing="isPlaying"
         @load-mp3="handleLoadMp3"
         @pause="handlePause"
@@ -75,7 +89,8 @@ export default {
       mp3Data: null,
       fileName: '',
       isPlaying: false,
-      currentView: 'stickers' // 默认显示贴纸选择器
+      currentView: 'stickers', // 默认显示贴纸选择器
+      selectedStickers: [] // 存储选中的贴纸
     }
   },
   methods: {
@@ -114,17 +129,24 @@ export default {
       this.$refs.audioPlayer.pause()
     },
     
+    handleStickersChanged(stickers) {
+      // 更新选中的贴纸
+      this.selectedStickers = stickers
+    },
+    
     onMusicMatched(matchResult) {
       // 当贴纸匹配到音乐时，自动加载并播放该文件
       console.log('Music matched:', matchResult)
       
-      // 先切换到播放列表视图
-      this.currentView = 'library'
+      // 获取正确的音乐库引用
+      const musicLibRef = this.currentView === 'library' 
+        ? this.$refs.musicLibrary 
+        : this.$refs.hiddenMusicLibrary
       
       // 在音乐库中查找并播放匹配的文件
       this.$nextTick(() => {
-        if (this.$refs.musicLibrary) {
-          this.$refs.musicLibrary.playMatchedFile(matchResult.filename)
+        if (musicLibRef) {
+          musicLibRef.playMatchedFile(matchResult.filename)
         }
       })
     }

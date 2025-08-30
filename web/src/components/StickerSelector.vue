@@ -2,19 +2,32 @@
   <div class="sticker-selector">
     <div class="sticker-header">
       <h3>选择贴纸来发现音乐</h3>
-      <div class="selected-count">已选择 {{ selectedStickers.length }} 个贴纸</div>
+      <div class="selected-count">
+        已选择 {{ selectedStickers.length }} / 6 个贴纸
+        <span v-if="selectedStickers.length < 1" class="hint">(至少选择1个)</span>
+        <span v-else-if="selectedStickers.length >= 6" class="hint">(已达到最大数量)</span>
+      </div>
     </div>
 
     <div class="sticker-grid">
       <div v-for="sticker in stickers" :key="sticker.id" class="sticker-item"
-        :class="{ selected: selectedStickers.includes(sticker.id) }" @click="toggleSticker(sticker.id)">
+        :class="{ 
+          selected: selectedStickers.includes(sticker.id),
+          disabled: !selectedStickers.includes(sticker.id) && selectedStickers.length >= 6
+        }" 
+        @click="toggleSticker(sticker.id)">
         <img :src="sticker.image" :alt="sticker.id" class="sticker-image" />
         <div class="sticker-name">{{ sticker.name }}</div>
       </div>
     </div>
 
     <div class="action-buttons">
-      <el-button type="primary" :disabled="selectedStickers.length === 0" @click="findMusic" :loading="loading">
+      <el-button 
+        type="primary" 
+        :disabled="selectedStickers.length === 0" 
+        @click="findMusic" 
+        :loading="loading"
+      >
         <i class="el-icon-search"></i>
         找到匹配的音乐
       </el-button>
@@ -35,7 +48,7 @@ import axios from 'axios'
 
 export default {
   name: 'StickerSelector',
-  emits: ['music-matched'],
+  emits: ['music-matched', 'stickers-changed'],
   data() {
     return {
       selectedStickers: [],
@@ -75,16 +88,32 @@ export default {
   methods: {
     toggleSticker(stickerId) {
       const index = this.selectedStickers.indexOf(stickerId)
+      
       if (index > -1) {
+        // 如果已选中，直接移除
         this.selectedStickers.splice(index, 1)
       } else {
+        // 如果未选中，检查是否已达到最大限制
+        if (this.selectedStickers.length >= 6) {
+          this.$message.warning('最多只能选择6个贴纸')
+          return
+        }
         this.selectedStickers.push(stickerId)
       }
+      
+      // 清除之前的匹配结果
+      this.matchedFile = null
+      
+      // 发射贴纸变化事件
+      this.$emit('stickers-changed', [...this.selectedStickers])
     },
 
     clearSelection() {
       this.selectedStickers = []
       this.matchedFile = null
+      
+      // 发射贴纸变化事件
+      this.$emit('stickers-changed', [])
     },
 
     async findMusic() {
@@ -146,9 +175,15 @@ export default {
   border-radius: 16px;
 }
 
+.selected-count .hint {
+  color: #999;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
 .sticker-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap: 12px;
   padding: 3px;
   margin-bottom: 20px;
@@ -160,24 +195,38 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 8px;
   border: 2px solid transparent;
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   background: white;
+  width: 100%;
+  height: 80px;
+  box-sizing: border-box;
 }
 
 .sticker-item:hover {
   border-color: #409eff;
-  transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(64, 158, 255, 0.15);
 }
 
 .sticker-item.selected {
   border-color: #409eff;
   background: #ecf5ff;
-  transform: scale(1.05);
+  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.3);
+}
+
+.sticker-item.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.sticker-item.disabled:hover {
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .sticker-image {
@@ -216,7 +265,7 @@ export default {
   }
 
   .sticker-grid {
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
   }
 
