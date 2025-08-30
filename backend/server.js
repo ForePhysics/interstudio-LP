@@ -1,11 +1,25 @@
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 
 const app = express();
 const port = 3001;
+
+// Gzip压缩中间件 - 必须在其他中间件之前
+app.use(compression({
+  level: 9,              // 最高压缩级别
+  threshold: 1024,       // 只压缩大于1KB的响应
+  filter: (req, res) => {
+    // 自定义过滤器，决定哪些响应需要压缩
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    return compression.filter(req, res);
+  }
+}));
 
 // 启用 CORS 和 JSON 解析
 app.use(cors());
@@ -17,8 +31,17 @@ if (!fs.existsSync(midiDir)) {
   fs.mkdirSync(midiDir);
 }
 
-// 静态文件服务 - 提供 MIDI 文件
-app.use('/midi', express.static(midiDir));
+// 静态文件服务 - 提供 MIDI 文件，带缓存优化
+app.use('/midi', (req, res, next) => {
+  // 设置缓存头
+  res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1年缓存
+  res.setHeader('ETag', req.url); // 使用URL作为ETag
+  next();
+}, express.static(midiDir, {
+  maxAge: '1y', // 1年缓存
+  etag: true,
+  lastModified: true
+}));
 
 // API 路由
 app.get('/api/midi-files', (req, res) => {
