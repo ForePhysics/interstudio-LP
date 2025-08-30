@@ -119,12 +119,12 @@ export default {
         if (this.isPlaying) {
           this.$emit('stop')
         }
-        
+
         // 确保音频上下文已初始化
         if (!this.audioContext) {
           await this.checkAudioContext()
         }
-        
+
         // iOS Safari 需要在用户交互中启动音频上下文
         if (this.audioContext.state === 'suspended') {
           try {
@@ -138,7 +138,7 @@ export default {
             return
           }
         }
-        
+
         this.selectedFile = file.url
         await this.loadMp3File(file)
       }
@@ -151,13 +151,13 @@ export default {
           url: file.url,
           type: 'mp3'
         }
-        
+
         this.$emit('load-mp3', {
           mp3Data,
           fileName: file.name
         })
-        
-        this.$message.success('MP3 文件加载成功')
+
+        // this.$message.success('MP3 文件加载成功')
       } catch (error) {
         this.$message.error('加载 MP3 文件失败：' + error.message)
       }
@@ -172,17 +172,17 @@ export default {
       if (!this.audioContext) {
         await this.checkAudioContext()
       }
-      
+
       if (this.audioContext.state === 'suspended') {
         try {
           await this.audioContext.resume()
           this.audioEnabled = true
           this.needsAudioEnable = false
           console.log('音频已启用')
-          
+
           // 播放测试音符
           this.playTestNote()
-          
+
           this.$message.success('音频已启用，现在可以播放音乐了！')
         } catch (error) {
           console.error('启用音频失败:', error)
@@ -200,21 +200,21 @@ export default {
         console.log('音频上下文未运行')
         return
       }
-      
+
       console.log('播放测试音符...')
       const oscillator = this.audioContext.createOscillator()
       const gain = this.audioContext.createGain()
-      
+
       oscillator.connect(gain)
       gain.connect(this.audioContext.destination)
-      
+
       oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime) // A4
       oscillator.type = 'sine'
-      
+
       gain.gain.setValueAtTime(0, this.audioContext.currentTime)
       gain.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.01)
       gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5)
-      
+
       oscillator.start(this.audioContext.currentTime)
       oscillator.stop(this.audioContext.currentTime + 0.5)
     },
@@ -226,23 +226,25 @@ export default {
       const i = Math.floor(Math.log(bytes) / Math.log(k))
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
     },
-    
+
     async playMatchedFile(filename) {
       // 在文件列表中查找匹配的文件
       const matchedFile = this.fileList.find(file => file.name === filename)
-      
+
       if (matchedFile) {
         // 找到文件，直接播放
         await this.selectAndPlay(matchedFile)
-        this.$message.success(`🎵 正在播放匹配的音乐: ${filename}`)
+        // this.$message.success(`🎵 正在播放匹配的音乐: ${filename}`)
+        this.$message.success(`🎵 正在播放匹配的音乐`)
       } else {
         // 如果在当前列表中没找到，重新加载文件列表再试
         await this.loadFileList()
-        
+
         const refreshedFile = this.fileList.find(file => file.name === filename)
         if (refreshedFile) {
           await this.selectAndPlay(refreshedFile)
-          this.$message.success(`🎵 正在播放匹配的音乐: ${filename}`)
+          // this.$message.success(`🎵 正在播放匹配的音乐: ${filename}`)
+          this.$message.success(`🎵 正在播放匹配的音乐`)
         } else {
           this.$message.error(`未找到匹配的音乐文件: ${filename}`)
         }
@@ -437,8 +439,13 @@ export default {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* 移动端适配 */
@@ -446,19 +453,19 @@ export default {
   .file-list-section {
     padding: 0 15px;
   }
-  
+
   .file-item {
     padding: 12px;
   }
-  
+
   .file-name {
     font-size: 14px;
   }
-  
+
   .audio-enable-banner {
     margin: 10px 15px;
   }
-  
+
   .mobile-header {
     padding: 12px 15px;
   }
