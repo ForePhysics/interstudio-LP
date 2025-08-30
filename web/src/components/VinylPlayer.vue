@@ -356,7 +356,8 @@ export default {
     linear-gradient(to bottom, #ecf0f1, #bdc3c7, #95a5a6);
   position: absolute;
   top: 26px;
-  left: 11px;
+  left: 50%;
+  transform: translateX(-50%);
   border-radius: 2px;
   transform-origin: top center;
   box-shadow: 
@@ -372,7 +373,8 @@ export default {
     radial-gradient(circle at 30% 30%, #ec7063, #e74c3c);
   position: absolute;
   bottom: 8px;
-  left: 6px;
+  left: 50%;
+  transform: translateX(-50%);
   border-radius: 5px 5px 2px 2px;
   box-shadow: 
     0 2px 6px rgba(0, 0, 0, 0.4),
@@ -437,7 +439,8 @@ export default {
   .tonearm-arm {
     height: 78px;
     top: 18px;
-    left: 6px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
