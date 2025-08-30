@@ -33,16 +33,21 @@ export default {
   min-height: 100vh;
   color: #fff;
   overflow-x: hidden;
+  --header-height: 38px;
 }
 
 .mobile-header {
-  padding: 20px 15px 10px;
+  padding: 5px 15px;
   text-align: center;
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
   z-index: 100;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mobile-header h1 {
@@ -59,8 +64,12 @@ export default {
 
 /* 移动端适配 */
 @media (max-width: 768px) {
+  #app {
+    --header-height: 28px;
+  }
+  
   .mobile-header {
-    padding: 8px 8px 8px;
+    padding: 5px 8px;
   }
   
   .mobile-header h1 {

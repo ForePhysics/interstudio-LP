@@ -1,29 +1,5 @@
 <template>
   <div class="music-library">
-    <!-- iOS 音频启用提示 -->
-    <div v-if="!audioEnabled && needsAudioEnable" class="audio-enable-banner">
-      <div class="audio-banner-content">
-        <span class="audio-banner-text">🔇 点击启用音频播放</span>
-        <div class="audio-banner-buttons">
-          <el-button @click="playTestNote" type="info" size="small" round>测试音频</el-button>
-          <el-button @click="enableAudio" type="warning" size="small" round>启用音频</el-button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 移动端头部 -->
-    <div class="mobile-header">
-      <div class="header-content">
-        <span class="title">🎧 音乐库</span>
-        <el-button @click="loadFileList" type="primary" size="small" :loading="loadingList" round>
-          <el-icon>
-            <refresh />
-          </el-icon>
-          刷新
-        </el-button>
-      </div>
-    </div>
-
     <!-- MP3 文件列表 -->
     <div class="file-list-section">
       <div v-if="fileList.length === 0 && !loadingList" class="empty-state">
@@ -267,7 +243,7 @@ export default {
 <style scoped>
 .music-library {
   background: transparent;
-  padding-bottom: 200px;
+  padding: 10px 0 20px;
   /* 为底部播放器留空间 */
 }
 

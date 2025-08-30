@@ -37,6 +37,7 @@
         :is-busy="isBusy"
         @music-matched="onMusicMatched"
         @stickers-changed="handleStickersChanged"
+        @pause-music="handleVinylPause"
       />
     </div>
     
@@ -151,17 +152,29 @@ export default {
       // 设置忙碌状态，禁用贴纸选择
       this.isBusy = true
       
-      // 获取正确的音乐库引用
-      const musicLibRef = this.currentView === 'library' 
-        ? this.$refs.musicLibrary 
-        : this.$refs.hiddenMusicLibrary
-      
-      // 在音乐库中查找并播放匹配的文件
-      this.$nextTick(() => {
-        if (musicLibRef) {
-          musicLibRef.playMatchedFile(matchResult.filename)
-        }
-      })
+      // 如果需要自动跳转到library页面
+      if (matchResult.autoSwitchToLibrary) {
+        this.currentView = 'library'
+        // 等待下一帧后获取音乐库引用
+        this.$nextTick(() => {
+          const musicLibRef = this.$refs.musicLibrary
+          if (musicLibRef) {
+            musicLibRef.playMatchedFile(matchResult.filename)
+          }
+        })
+      } else {
+        // 获取正确的音乐库引用
+        const musicLibRef = this.currentView === 'library' 
+          ? this.$refs.musicLibrary 
+          : this.$refs.hiddenMusicLibrary
+        
+        // 在音乐库中查找并播放匹配的文件
+        this.$nextTick(() => {
+          if (musicLibRef) {
+            musicLibRef.playMatchedFile(matchResult.filename)
+          }
+        })
+      }
     },
     
     handleMusicMatchError(filename) {
@@ -255,12 +268,27 @@ export default {
 
 /* 移动端适配 */
 @media (max-width: 768px) {
+  .mp3-player {
+    padding: 0;
+  }
+
   .vinyl-main {
-    padding: 10px;
+    padding: 0;
+    width: 90%;
+    margin: 10px auto;
+    aspect-ratio: 1;
+    height: auto;
   }
   
   .view-panel {
-    padding: 0 10px;
+    padding: 0;
+    margin-top: 10px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    height: calc(100vh - var(--header-height, 28px) - 90vw - 30px);
+    overflow: hidden;
   }
   
   .switch-buttons {

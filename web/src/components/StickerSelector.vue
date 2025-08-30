@@ -12,19 +12,17 @@
     <div class="sticker-grid">
       <div v-for="sticker in stickers" :key="sticker.id" class="sticker-item"
         :class="{ 
-          selected: selectedStickers.includes(sticker.id),
-          disabled: isBusy || (!selectedStickers.includes(sticker.id) && selectedStickers.length >= 6)
+          selected: selectedStickers.includes(sticker.id)
         }" 
         @click="toggleSticker(sticker.id)">
         <img :src="sticker.image" :alt="sticker.id" class="sticker-image" />
-        <div class="sticker-name">{{ sticker.name }}</div>
       </div>
     </div>
 
     <div class="action-buttons">
       <el-button 
         type="primary" 
-        :disabled="isBusy || selectedStickers.length === 0" 
+        :disabled="selectedStickers.length === 0" 
         @click="findMusic" 
         :loading="loading"
       >
@@ -50,7 +48,7 @@ export default {
       default: false
     }
   },
-  emits: ['music-matched', 'stickers-changed'],
+  emits: ['music-matched', 'stickers-changed', 'pause-music', 'switch-to-library'],
   data() {
     return {
       selectedStickers: [],
@@ -89,10 +87,9 @@ export default {
   },
   methods: {
     toggleSticker(stickerId) {
-      // 如果正在忙碌（匹配音乐或播放），阻止标签选择
-      if (this.isBusy) {
-        this.$message.warning('正在处理音乐，请稍候')
-        return
+      // 如果正在播放音乐，先暂停
+      if (this.isPlaying) {
+        this.$emit('pause-music')
       }
 
       const index = this.selectedStickers.indexOf(stickerId)
@@ -126,6 +123,20 @@ export default {
 
     async findMusic() {
       if (this.selectedStickers.length === 0) return
+
+      // 检查是否选择了 b1, b2, b3, b4, b5, b6
+      const bStickers = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6']
+      const selectedBStickers = this.selectedStickers.filter(sticker => bStickers.includes(sticker))
+      
+      if (selectedBStickers.length === 6 && this.selectedStickers.length === 6) {
+        // 选择了全部6个B系列贴纸，直接播放特定音乐并跳转
+        this.$emit('music-matched', {
+          filename: '114,514.mp3', // 这里设置特定的音乐文件名
+          stickers: this.selectedStickers,
+          autoSwitchToLibrary: true
+        })
+        return
+      }
 
       this.loading = true
       this.matchedFile = null
@@ -161,8 +172,8 @@ export default {
   border-radius: 12px;
   display: flex;
   flex-direction: column;
-  height: auto;
-  max-height: calc(var(--app-height, 100vh) - var(--header-height, 55px) - 420px);
+  height: 100%;
+  overflow: hidden;
 }
 
 .sticker-header {
@@ -198,8 +209,9 @@ export default {
   gap: 12px;
   padding: 3px;
   margin-bottom: 20px;
-  max-height: 300px;
+  flex: 1;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .sticker-item {
@@ -229,34 +241,10 @@ export default {
   box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.3);
 }
 
-.sticker-item.disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.sticker-item.disabled:hover {
-  border-color: transparent;
-  box-shadow: none;
-}
-
 .sticker-image {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   object-fit: contain;
-  margin-bottom: 4px;
-}
-
-.sticker-name {
-  font-size: 11px;
-  text-align: center;
-  color: #666;
-  font-weight: 500;
-}
-
-.sticker-item.selected .sticker-name {
-  color: #409eff;
-  font-weight: 600;
 }
 
 .action-buttons {
@@ -268,13 +256,55 @@ export default {
 /* 移动端适配 */
 @media (max-width: 768px) {
   .sticker-selector {
-    padding: 16px;
+    padding: 12px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sticker-header {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+    flex-shrink: 0;
+    margin-bottom: 16px;
+  }
+
+  .sticker-header h3 {
+    font-size: 16px;
   }
 
   .sticker-grid {
     grid-template-columns: repeat(auto-fit, 80px);
     gap: 10px;
     justify-content: center;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-bottom: 16px;
+    min-height: 0;
+    max-height: none;
+    padding: 3px;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 #f7fafc;
+  }
+
+  .sticker-grid::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sticker-grid::-webkit-scrollbar-track {
+    background: #f7fafc;
+    border-radius: 3px;
+  }
+
+  .sticker-grid::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 3px;
+  }
+
+  .sticker-grid::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
   }
 
   .sticker-item {
@@ -283,18 +313,14 @@ export default {
   }
 
   .sticker-image {
-    width: 40px;
-    height: 40px;
-  }
-
-  .sticker-header {
-    flex-direction: column;
-    gap: 8px;
-    text-align: center;
+    width: 70px;
+    height: 70px;
   }
 
   .action-buttons {
     flex-direction: column;
+    flex-shrink: 0;
+    margin-top: 0;
   }
 }
 </style>
