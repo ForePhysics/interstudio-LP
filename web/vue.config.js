@@ -4,6 +4,9 @@ const CompressionPlugin = require('compression-webpack-plugin')
 module.exports = defineConfig({
   transpileDependencies: true,
   
+  // 公共路径配置
+  publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
+  
   // 生产环境配置
   configureWebpack: config => {
     if (process.env.NODE_ENV === 'production') {

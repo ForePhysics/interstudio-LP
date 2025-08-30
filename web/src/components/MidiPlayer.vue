@@ -4,7 +4,6 @@
     <div class="vinyl-main">
       <VinylPlayer 
         :is-playing="isPlaying"
-        :current-song-name="currentSongDisplayName"
         @play="handleVinylPlay"
         @pause="handleVinylPause"
       />
@@ -77,13 +76,6 @@ export default {
       fileName: '',
       isPlaying: false,
       currentView: 'stickers' // 默认显示贴纸选择器
-    }
-  },
-  computed: {
-    currentSongDisplayName() {
-      if (!this.fileName) return ''
-      // 移除文件扩展名并格式化显示
-      return this.fileName.replace(/\.(mid|midi)$/, '').replace(/[,_-]/g, ' ')
     }
   },
   methods: {

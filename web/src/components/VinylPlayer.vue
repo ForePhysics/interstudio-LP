@@ -22,29 +22,6 @@
         </div>
       </div>
     </div>
-    
-    <!-- 控制面板 -->
-    <div class="control-panel">
-      <div class="control-buttons">
-        <el-button 
-          type="primary" 
-          circle 
-          size="large"
-          @click="togglePlay"
-          :icon="isPlaying ? 'video-pause' : 'video-play'"
-          class="main-play-button"
-        >
-        </el-button>
-      </div>
-      
-      <!-- 歌曲信息 -->
-      <div class="song-info" v-if="currentSongName">
-        <div class="song-name">{{ currentSongName }}</div>
-        <div class="song-status">
-          {{ isPlaying ? '正在播放' : '已暂停' }}
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -55,10 +32,6 @@ export default {
     isPlaying: {
       type: Boolean,
       default: false
-    },
-    currentSongName: {
-      type: String,
-      default: ''
     }
   },
   emits: ['play', 'pause', 'stop'],
@@ -93,7 +66,6 @@ export default {
   position: relative;
   width: 350px;
   height: 350px;
-  margin-bottom: 20px;
 }
 
 /* 黑胶唱片 */
@@ -257,54 +229,6 @@ export default {
   border-radius: 50%;
 }
 
-/* 控制面板 */
-.control-panel {
-  width: 100%;
-  max-width: 300px;
-  text-align: center;
-}
-
-.control-buttons {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.main-play-button {
-  width: 60px !important;
-  height: 60px !important;
-  font-size: 24px;
-  background: linear-gradient(45deg, #e74c3c, #c0392b);
-  border: none;
-  transition: all 0.3s ease;
-}
-
-.main-play-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
-}
-
-/* 歌曲信息 */
-.song-info {
-  color: white;
-  margin-top: 10px;
-}
-
-.song-name {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.song-status {
-  font-size: 12px;
-  opacity: 0.8;
-  color: #bdc3c7;
-}
-
 /* 移动端适配 */
 @media (max-width: 768px) {
   .vinyl-player {
@@ -315,7 +239,6 @@ export default {
   .vinyl-container {
     width: 280px;
     height: 280px;
-    margin-bottom: 15px;
   }
   
   .tonearm {
@@ -334,16 +257,6 @@ export default {
     height: 78px;
     top: 18px;
     left: 7px;
-  }
-  
-  .main-play-button {
-    width: 50px !important;
-    height: 50px !important;
-    font-size: 20px;
-  }
-  
-  .song-name {
-    font-size: 14px;
   }
 }
 
