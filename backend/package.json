@@ -1,7 +1,7 @@
 {
   "name": "soundwave-backend",
   "version": "1.0.0",
-  "description": "SoundWave MIDI 播放器后端服务",
+  "description": "SoundWave MP3 播放器后端服务",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -16,7 +16,7 @@
     "nodemon": "^3.0.1"
   },
   "keywords": [
-    "midi",
+    "mp3",
     "music",
     "audio",
     "express"

@@ -7,7 +7,7 @@
 - 🎨 **贴纸智能匹配**：通过选择不同贴纸组合，AI 算法智能推荐匹配的音乐
 - 🎶 **真实黑胶体验**：逼真的黑胶唱片动画，包含旋转效果和唱针臂动作
 - 📱 **响应式设计**：完美适配桌面端和移动端设备
-- 🎵 **MIDI 音乐播放**：支持高质量 MIDI 文件播放和实时音频渲染
+- 🎵 **MP3 音乐播放**：支持高质量 MP3 文件播放和实时音频渲染
 - 🔄 **双视图模式**：贴纸选择模式和传统音乐库浏览模式自由切换
 
 ## 🏗️ 项目架构
@@ -17,7 +17,7 @@ soundwave/
 ├── web/                    # 前端 Vue.js 应用
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── MidiPlayer.vue      # 主播放器组件
+│   │   │   ├── Mp3Player.vue       # 主播放器组件
 │   │   │   ├── VinylPlayer.vue     # 黑胶唱片播放器
 │   │   │   ├── StickerSelector.vue # 贴纸选择器
 │   │   │   ├── MusicLibrary.vue    # 音乐库组件
@@ -34,7 +34,7 @@ soundwave/
 │   ├── match.py          # Python 贴纸匹配算法
 │   ├── package.json
 │   ├── assets/           # 贴纸资源目录
-│   └── midi-files/       # MIDI 文件存储
+│   └── mp3-files/        # MP3 文件存储
 └── README.md
 ```
 
@@ -72,8 +72,8 @@ npm run serve
 ## 🔌 API 接口
 
 ### RESTful 端点
-- `GET /api/midi-files` - 获取所有 MIDI 文件列表
-- `GET /midi/<filename>` - 下载指定 MIDI 文件
+- `GET /api/mp3-files` - 获取所有 MP3 文件列表
+- `GET /mp3/<filename>` - 下载指定 MP3 文件
 - `POST /api/match-stickers` - 根据贴纸选择匹配音乐
 - `GET /api/health` - 服务健康检查
 
@@ -102,7 +102,7 @@ Content-Type: application/json
 3. 🎵 **自动播放**：系统推荐并自动播放最匹配的音乐
 
 ### 音乐库模式
-1. 📁 **浏览文件**：查看所有可用的 MIDI 音乐文件
+1. 📁 **浏览文件**：查看所有可用的 MP3 音乐文件
 2. ▶️ **直接播放**：点击任意音乐文件立即播放
 3. 🔄 **随时切换**：与贴纸模式无缝切换
 
@@ -172,8 +172,8 @@ A: 确保后端服务正常运行，Python 环境配置正确，检查控制台�
 **Q: 移动端显示异常？**
 A: 项目已适配移动端，如有问题请清除浏览器缓存后重试。
 
-**Q: MIDI 文件无法播放？**
-A: 确保 MIDI 文件格式正确（.mid 或 .midi），文件没有损坏。
+**Q: MP3 文件无法播放？**
+A: 确保 MP3 文件格式正确，文件没有损坏，浏览器支持该音频格式。
 
 ### 性能优化建议
 - 定期清理浏览器缓存

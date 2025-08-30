@@ -305,12 +305,12 @@ export default {
 .tonearm {
   transform: rotate(-80deg);
   position: absolute;
-  top: 50%;
-  right: 130px;
+  top: 52%;
+  right: 150px;
   margin-top: -190px;
   width: 75px;
   height: 150px;
-  transform-origin: 13px 13px;
+  transform-origin: 50% 13px;
   transition: transform 1.2s cubic-bezier(0.4, 0.0, 0.2, 1);
   z-index: 15;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
@@ -329,7 +329,8 @@ export default {
   border-radius: 50%;
   position: absolute;
   top: 0;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   box-shadow: 
     0 3px 10px rgba(0, 0, 0, 0.4),
     inset 0 1px 3px rgba(255, 255, 255, 0.3);
@@ -425,15 +426,17 @@ export default {
   .tonearm {
     width: 55px;
     height: 110px;
-    top: 31%;
-    right: 23%;
+    top: 30%;
+    right: 28%;
     margin-top: -55px;
-    transform-origin: 9px 9px;
+    transform-origin: 50% 9px;
   }
   
   .tonearm-base {
     width: 18px;
     height: 18px;
+    left: 50%;
+    transform: translateX(-50%);
   }
   
   .tonearm-arm {

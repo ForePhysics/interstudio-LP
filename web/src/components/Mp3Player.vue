@@ -257,7 +257,7 @@ export default {
 }
 
 /* 整体背景纹理 */
-.midi-player::before {
+.mp3-player::before {
   content: '';
   position: fixed;
   top: 0;

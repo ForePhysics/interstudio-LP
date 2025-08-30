@@ -30,7 +30,7 @@ npm run build
 
 2. **部署到服务器**
    - 将 `web/dist` 目录上传到 Web 服务器
-   - 配置 Web 服务器代理 `/api` 和 `/midi` 路径到后端服务器
+   - 配置 Web 服务器代理 `/api` 和 `/mp3` 路径到后端服务器
 
 ## 🔧 代理配置说明
 
@@ -43,7 +43,7 @@ devServer: {
       target: 'http://localhost:3001',
       changeOrigin: true
     },
-    '/midi': {
+    '/mp3': {
       target: 'http://localhost:3001',
       changeOrigin: true
     }
@@ -70,11 +70,9 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
     }
     
-    # MIDI 文件代理
-    location /midi/ {
-        proxy_pass http://localhost:3001;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
+    # MP3 文件代理
+    location /mp3/ {
+        proxy_pass http://backend;
     }
 }
 ```
@@ -99,7 +97,7 @@ npm run serve -- --host 0.0.0.0
 
 # 后端（修改 server.js 中的 listen）
 app.listen(port, '0.0.0.0', () => {
-  console.log(`MIDI 服务器运行在 http://0.0.0.0:${port}`);
+  console.log(`MP3 服务器运行在 http://0.0.0.0:${port}`);
 });
 ```
 
@@ -117,10 +115,10 @@ app.listen(port, '0.0.0.0', () => {
 
 ## 🔧 常见问题
 
-### Q: 前端无法获取 MIDI 文件列表
+### Q: 前端无法获取 MP3 文件列表
 A: 检查后端服务器是否正常运行在 3001 端口，代理配置是否正确
 
-### Q: MIDI 文件无法播放
+### Q: MP3 文件无法播放
 A: 确保浏览器支持 Web Audio API，在 HTTPS 环境下使用
 
 ### Q: 移动端界面显示异常
@@ -128,8 +126,8 @@ A: 检查 viewport meta 标签是否正确配置
 
 ## 📝 API 接口
 
-- `GET /api/midi-files` - 获取 MIDI 文件列表
-- `GET /midi/{filename}` - 下载指定 MIDI 文件
+- `GET /api/mp3-files` - 获取 MP3 文件列表
+- `GET /mp3/{filename}` - 下载指定 MP3 文件
 - `GET /api/health` - 健康检查
 
 所有 API 调用现在都使用相对路径，支持代理转发。
