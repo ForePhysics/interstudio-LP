@@ -102,8 +102,6 @@ export default {
         this.fileList = response.data
         if (this.fileList.length === 0) {
           this.$message.info('后端暂无 MP3 文件')
-        } else {
-          this.$message.success(`找到 ${this.fileList.length} 个 MP3 文件`)
         }
       } catch (error) {
         this.$message.error('获取文件列表失败：' + error.message)

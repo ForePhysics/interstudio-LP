@@ -36,14 +36,14 @@
           alt="黑胶唱片" 
           class="vinyl-image"
         />
-        
-        <!-- 唱针臂 -->
-        <div class="tonearm" :class="{ 'playing': isPlaying }">
-          <div class="tonearm-base"></div>
-          <div class="tonearm-arm"></div>
-          <div class="tonearm-head"></div>
-        </div>
       </div>
+    </div>
+
+    <!-- 独立的唱针臂 -->
+    <div class="tonearm" :class="{ 'playing': isPlaying }">
+      <div class="tonearm-base"></div>
+      <div class="tonearm-arm"></div>
+      <div class="tonearm-head"></div>
     </div>
   </div>
 </template>
@@ -301,21 +301,23 @@ export default {
   z-index: 2;
 }
 
-/* 唱针臂 */
+/* 唱针臂 - 独立定位 */
 .tonearm {
+  transform: rotate(-80deg);
   position: absolute;
-  top: 15px;
-  right: 30px;
+  top: 50%;
+  right: 130px;
+  margin-top: -190px;
   width: 75px;
   height: 150px;
-  transform-origin: 15px 15px;
+  transform-origin: 13px 13px;
   transition: transform 1.2s cubic-bezier(0.4, 0.0, 0.2, 1);
   z-index: 15;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
 .tonearm.playing {
-  transform: rotate(28deg);
+  transform: rotate(-12deg);
 }
 
 .tonearm-base {
@@ -354,7 +356,7 @@ export default {
     linear-gradient(to bottom, #ecf0f1, #bdc3c7, #95a5a6);
   position: absolute;
   top: 26px;
-  left: 10px;
+  left: 11px;
   border-radius: 2px;
   transform-origin: top center;
   box-shadow: 
@@ -370,7 +372,7 @@ export default {
     radial-gradient(circle at 30% 30%, #ec7063, #e74c3c);
   position: absolute;
   bottom: 8px;
-  left: 5px;
+  left: 6px;
   border-radius: 5px 5px 2px 2px;
   box-shadow: 
     0 2px 6px rgba(0, 0, 0, 0.4),
@@ -422,8 +424,10 @@ export default {
   .tonearm {
     width: 55px;
     height: 110px;
-    top: 12px;
-    right: 22px;
+    top: 31%;
+    right: 23%;
+    margin-top: -55px;
+    transform-origin: 9px 9px;
   }
   
   .tonearm-base {
@@ -434,7 +438,7 @@ export default {
   .tonearm-arm {
     height: 78px;
     top: 18px;
-    left: 7px;
+    left: 6px;
   }
 }
 
