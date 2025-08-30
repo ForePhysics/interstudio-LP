@@ -66,6 +66,7 @@ export default {
       default: false
     }
   },
+  emits: ['load-mp3', 'pause', 'music-match-error'],
   data() {
     return {
       fileList: [],
@@ -228,26 +229,35 @@ export default {
     },
 
     async playMatchedFile(filename) {
-      // 在文件列表中查找匹配的文件
-      const matchedFile = this.fileList.find(file => file.name === filename)
+      try {
+        // 在文件列表中查找匹配的文件
+        const matchedFile = this.fileList.find(file => file.name === filename)
 
-      if (matchedFile) {
-        // 找到文件，直接播放
-        await this.selectAndPlay(matchedFile)
-        // this.$message.success(`🎵 正在播放匹配的音乐: ${filename}`)
-        this.$message.success(`🎵 正在播放匹配的音乐`)
-      } else {
-        // 如果在当前列表中没找到，重新加载文件列表再试
-        await this.loadFileList()
-
-        const refreshedFile = this.fileList.find(file => file.name === filename)
-        if (refreshedFile) {
-          await this.selectAndPlay(refreshedFile)
+        if (matchedFile) {
+          // 找到文件，直接播放
+          await this.selectAndPlay(matchedFile)
           // this.$message.success(`🎵 正在播放匹配的音乐: ${filename}`)
           this.$message.success(`🎵 正在播放匹配的音乐`)
         } else {
-          this.$message.error(`未找到匹配的音乐文件: ${filename}`)
+          // 如果在当前列表中没找到，重新加载文件列表再试
+          await this.loadFileList()
+
+          const refreshedFile = this.fileList.find(file => file.name === filename)
+          if (refreshedFile) {
+            await this.selectAndPlay(refreshedFile)
+            // this.$message.success(`🎵 正在播放匹配的音乐: ${filename}`)
+            this.$message.success(`🎵 正在播放匹配的音乐`)
+          } else {
+            this.$message.error(`未找到匹配的音乐文件: ${filename}`)
+            // 通知父组件出错，清除忙碌状态
+            this.$emit('music-match-error', filename)
+          }
         }
+      } catch (error) {
+        console.error('播放匹配音乐时出错:', error)
+        this.$message.error('播放音乐时出错，请重试')
+        // 通知父组件出错，清除忙碌状态
+        this.$emit('music-match-error', filename)
       }
     }
   }

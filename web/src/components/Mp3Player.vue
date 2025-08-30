@@ -34,6 +34,7 @@
     <div v-if="currentView === 'stickers'" class="view-panel">
       <StickerSelector 
         :is-playing="isPlaying"
+        :is-busy="isBusy"
         @music-matched="onMusicMatched"
         @stickers-changed="handleStickersChanged"
       />
@@ -46,6 +47,7 @@
         :is-playing="isPlaying"
         @load-mp3="handleLoadMp3"
         @pause="handlePause"
+        @music-match-error="handleMusicMatchError"
       />
     </div>
     
@@ -56,6 +58,7 @@
         :is-playing="isPlaying"
         @load-mp3="handleLoadMp3"
         @pause="handlePause"
+        @music-match-error="handleMusicMatchError"
       />
     </div>
     
@@ -90,6 +93,7 @@ export default {
       mp3Data: null,
       fileName: '',
       isPlaying: false,
+      isBusy: false, // 忙碌状态：从点击"找到匹配的音乐"到播放完成或出错
       currentView: 'stickers', // 默认显示贴纸选择器
       selectedStickers: [] // 存储选中的贴纸
     }
@@ -124,6 +128,11 @@ export default {
 
     handlePlayStateChanged(playing) {
       this.isPlaying = playing
+      
+      // 当播放停止时，清除忙碌状态
+      if (!playing) {
+        this.isBusy = false
+      }
     },
 
     handlePause() {
@@ -136,8 +145,11 @@ export default {
     },
     
     onMusicMatched(matchResult) {
-      // 当贴纸匹配到音乐时，自动加载并播放该文件
+      // 当贴纸匹配到音乐时，设置忙碌状态并自动加载并播放该文件
       console.log('Music matched:', matchResult)
+      
+      // 设置忙碌状态，禁用贴纸选择
+      this.isBusy = true
       
       // 获取正确的音乐库引用
       const musicLibRef = this.currentView === 'library' 
@@ -150,6 +162,12 @@ export default {
           musicLibRef.playMatchedFile(matchResult.filename)
         }
       })
+    },
+    
+    handleMusicMatchError(filename) {
+      // 当音乐匹配出错时，清除忙碌状态
+      console.log('Music match error for:', filename)
+      this.isBusy = false
     }
   }
 }

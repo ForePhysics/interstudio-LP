@@ -13,7 +13,7 @@
       <div v-for="sticker in stickers" :key="sticker.id" class="sticker-item"
         :class="{ 
           selected: selectedStickers.includes(sticker.id),
-          disabled: isPlaying || (!selectedStickers.includes(sticker.id) && selectedStickers.length >= 6)
+          disabled: isBusy || (!selectedStickers.includes(sticker.id) && selectedStickers.length >= 6)
         }" 
         @click="toggleSticker(sticker.id)">
         <img :src="sticker.image" :alt="sticker.id" class="sticker-image" />
@@ -24,7 +24,7 @@
     <div class="action-buttons">
       <el-button 
         type="primary" 
-        :disabled="isPlaying || selectedStickers.length === 0" 
+        :disabled="isBusy || selectedStickers.length === 0" 
         @click="findMusic" 
         :loading="loading"
       >
@@ -42,6 +42,10 @@ export default {
   name: 'StickerSelector',
   props: {
     isPlaying: {
+      type: Boolean,
+      default: false
+    },
+    isBusy: {
       type: Boolean,
       default: false
     }
@@ -85,9 +89,9 @@ export default {
   },
   methods: {
     toggleSticker(stickerId) {
-      // 如果正在播放音乐，阻止标签选择
-      if (this.isPlaying) {
-        this.$message.warning('播放音乐时无法修改贴纸选择')
+      // 如果正在忙碌（匹配音乐或播放），阻止标签选择
+      if (this.isBusy) {
+        this.$message.warning('正在处理音乐，请稍候')
         return
       }
 
