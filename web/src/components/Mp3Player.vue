@@ -11,7 +11,7 @@
     </div>
 
     <!-- 主界面切换按钮 -->
-    <div class="view-switcher">
+    <!-- <div class="view-switcher">
       <div class="switch-buttons">
         <el-button 
           :type="currentView === 'stickers' ? 'primary' : ''"
@@ -28,11 +28,12 @@
           📋 播放列表
         </el-button>
       </div>
-    </div>
+    </div> -->
 
     <!-- 贴纸选择器视图 -->
     <div v-if="currentView === 'stickers'" class="view-panel">
       <StickerSelector 
+        :is-playing="isPlaying"
         @music-matched="onMusicMatched"
         @stickers-changed="handleStickersChanged"
       />
@@ -170,7 +171,7 @@ export default {
   align-items: center;
   padding: 0;
   width: 100%;
-  height: 50vh;
+  height: 45vh;
   background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
 }
 

@@ -48,7 +48,6 @@ export default {
 .mobile-header h1 {
   font-size: 24px;
   font-weight: 700;
-  margin-bottom: 5px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -61,11 +60,11 @@ export default {
 /* 移动端适配 */
 @media (max-width: 768px) {
   .mobile-header {
-    padding: 15px 10px 8px;
+    padding: 8px 8px 8px;
   }
   
   .mobile-header h1 {
-    font-size: 20px;
+    font-size: 18px;
   }
   
   .mobile-header .subtitle {

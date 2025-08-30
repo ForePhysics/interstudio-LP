@@ -13,7 +13,7 @@
       <div v-for="sticker in stickers" :key="sticker.id" class="sticker-item"
         :class="{ 
           selected: selectedStickers.includes(sticker.id),
-          disabled: !selectedStickers.includes(sticker.id) && selectedStickers.length >= 6
+          disabled: isPlaying || (!selectedStickers.includes(sticker.id) && selectedStickers.length >= 6)
         }" 
         @click="toggleSticker(sticker.id)">
         <img :src="sticker.image" :alt="sticker.id" class="sticker-image" />
@@ -24,21 +24,13 @@
     <div class="action-buttons">
       <el-button 
         type="primary" 
-        :disabled="selectedStickers.length === 0" 
+        :disabled="isPlaying || selectedStickers.length === 0" 
         @click="findMusic" 
         :loading="loading"
       >
         <i class="el-icon-search"></i>
         找到匹配的音乐
       </el-button>
-
-      <el-button v-if="selectedStickers.length > 0" @click="clearSelection">
-        清空选择
-      </el-button>
-    </div>
-
-    <div v-if="matchedFile" class="match-result">
-      <el-alert title="找到匹配的音乐！" type="success" :description="`匹配文件: ${matchedFile}`" show-icon :closable="false" />
     </div>
   </div>
 </template>
@@ -48,6 +40,12 @@ import axios from 'axios'
 
 export default {
   name: 'StickerSelector',
+  props: {
+    isPlaying: {
+      type: Boolean,
+      default: false
+    }
+  },
   emits: ['music-matched', 'stickers-changed'],
   data() {
     return {
@@ -87,6 +85,12 @@ export default {
   },
   methods: {
     toggleSticker(stickerId) {
+      // 如果正在播放音乐，阻止标签选择
+      if (this.isPlaying) {
+        this.$message.warning('播放音乐时无法修改贴纸选择')
+        return
+      }
+
       const index = this.selectedStickers.indexOf(stickerId)
       
       if (index > -1) {
@@ -148,10 +152,13 @@ export default {
 
 <style scoped>
 .sticker-selector {
-  padding: 20px;
+  padding: 12px;
   background: #f8f9fa;
   border-radius: 12px;
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  max-height: calc(var(--app-height, 100vh) - var(--header-height, 55px) - 420px);
 }
 
 .sticker-header {
@@ -254,10 +261,6 @@ export default {
   justify-content: center;
 }
 
-.match-result {
-  margin-top: 16px;
-}
-
 /* 移动端适配 */
 @media (max-width: 768px) {
   .sticker-selector {
@@ -265,8 +268,14 @@ export default {
   }
 
   .sticker-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, 80px);
     gap: 10px;
+    justify-content: center;
+  }
+
+  .sticker-item {
+    width: 80px;
+    height: 80px;
   }
 
   .sticker-image {
