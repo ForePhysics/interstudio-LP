@@ -22,7 +22,7 @@
     <div class="action-buttons">
       <el-button 
         type="primary" 
-        :disabled="selectedStickers.length === 0" 
+        :disabled="selectedStickers.length === 0 || isPlaying" 
         @click="findMusic" 
         :loading="loading"
       >

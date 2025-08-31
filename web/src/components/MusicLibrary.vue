@@ -347,8 +347,42 @@ export default {
 
 /* 移动端适配 */
 @media (max-width: 768px) {
+  .music-library {
+    height: 95%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
   .file-list-section {
     padding: 0 15px;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 #f7fafc;
+  }
+
+  .file-list-section::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .file-list-section::-webkit-scrollbar-track {
+    background: #f7fafc;
+    border-radius: 3px;
+  }
+
+  .file-list-section::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 3px;
+  }
+
+  .file-list-section::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+  }
+
+  .file-list {
+    padding-bottom: 20px;
   }
 
   .file-item {

@@ -273,6 +273,7 @@ export default {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   .vinyl-main {
@@ -294,9 +295,9 @@ export default {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 10px;
-    flex: 1;
-    min-height: 0;
+    margin-bottom: 20px;
+    height: 400px;
+    overflow: hidden;
   }
   
   .switch-buttons {
